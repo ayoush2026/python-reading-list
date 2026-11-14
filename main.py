@@ -5,21 +5,22 @@ try:
 
   choice = input('Search Book By: Pick Number \n1.Title\n2.Author\n3.Both\n')
 
-  if choice=='1':
-   title = input('Enter the Title of Book:')
-  elif choice=='2':
-   author = input('Enter the Author of Book:')
-  elif choice=='3':
-   title = input('Enter you Title of Book:')
-   author = input('Enter the Author of Book:')
-  else:
-    print('Invalid Input!')
-    raise Exception('Program Terminate')
+  params = {} # use params for API request
 
-  query = f"title={title}&author={author}" if choice=='3' else f"{'title' if choice=='1' else 'author'}={title if choice=='1' else author}"
-  url = f"https://openlibrary.org/search.json?{query}"
+  if choice=='1':
+   params['title'] = input('Enter the Title of Book:')
+  elif choice=='2':
+   params['author'] = input('Enter the Author of Book:')
+  elif choice=='3':
+   params['title'] = input('Enter you Title of Book:')
+   params['author'] = input('Enter the Author of Book:')
+  else:
+   print('Invalid Input!')
+   raise Exception('Program Terminate')
+
+  url = "https://openlibrary.org/search.json"
   headers = {"User-Agent": "ReadingList/1.0(ayoushkumar391@gmail.com)"}
-  response = requests.get(url, headers=headers, timeout=5)
+  response = requests.get(url,params=params,headers=headers,timeout=5)
   response.raise_for_status()
   result = response.json()
 
@@ -51,7 +52,8 @@ try:
      while True:
 
       try:
-       book_no = int(input('Enter The Number Of Book You Want To Save:'))
+       print(f'Enter The Number Of Book You Want To Save no>=0 and no<{length}')
+       book_no = int(input('Enter: '))
       except:
         print('Please Pick Number')
         continue
