@@ -30,9 +30,15 @@ try:
   result = result['docs']
   Saved_List = []
 
+  # add Api to print cover
   No=0
   print('\n\n----------------Book Search Results----------------')
   for book in result:
+
+    if book.get('cover_i'):
+     cover_url = f"https://covers.openlibrary.org/b/id/{book.get('cover_i')}-L.jpg"
+     print('Image Url:',cover_url)
+
     print('Number:',No)
     print('Title:',book['title'])
     print('Author Name:',book['author_name'])
@@ -60,13 +66,13 @@ try:
 
       if book_no>=0 and book_no<length:
        Saved_List.append({
-           'id':result[book_no]['key'],
-           'title':result[book_no]['title'],
-           'author':result[book_no]['author_name'],
-           'edition_count':result[book_no]['edition_count'],
-           'cover_id':result[book_no]['cover_i'],
-           'publish_year':result[book_no]['first_publish_year'],
-           'language':result[book_no]['language'],
+           'id':result[book_no]['key'] if result[book_no].get('key') else '',
+           'title':result[book_no]['title'] if result[book_no].get('title') else '',
+           'author':result[book_no]['author_name'] if result[book_no].get('author_name') else '',
+           'edition_count':result[book_no]['edition_count'] if result[book_no].get('edition_count') else '',
+           'cover_id':result[book_no]['cover_i'] if result[book_no].get('cover_i') else '',
+           'publish_year':result[book_no]['first_publish_year'] if result[book_no].get('first_publish_year') else '',
+           'language':result[book_no]['language'] if result[book_no].get('language') else '',
        })
        print('---------------Saved list---------------')
        for book in Saved_List:
