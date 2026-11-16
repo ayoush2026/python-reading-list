@@ -28,18 +28,18 @@ try:
 
   length = len(result['docs'])
   result = result['docs']
-  Saved_List = []
-
+  Saved_Map = {}          # use dict to optimize store and get at constant time.
+  
   # add Api to print cover
   No=0
   print('\n\n----------------Book Search Results----------------')
   for book in result:
-
+    print('Number:',No)
+    
     if book.get('cover_i'):
      cover_url = f"https://covers.openlibrary.org/b/id/{book.get('cover_i')}-L.jpg"
      print('Image Url:',cover_url)
 
-    print('Number:',No)
     print('Title:',book['title'])
     print('Author Name:',book['author_name'])
     print('First Published:',book['first_publish_year'])
@@ -51,7 +51,7 @@ try:
   while choice!='0':
    print('Do you Want To Save Any Book:')
    print('1. Yes')
-   print('0. Terminate Program')
+   print('0. Save File!')
    choice = input('Enter: ')
    if choice=='1':
 
@@ -65,18 +65,24 @@ try:
         continue
 
       if book_no>=0 and book_no<length:
-       Saved_List.append({
-           'id':result[book_no]['key'] if result[book_no].get('key') else '',
-           'title':result[book_no]['title'] if result[book_no].get('title') else '',
-           'author':result[book_no]['author_name'] if result[book_no].get('author_name') else '',
-           'edition_count':result[book_no]['edition_count'] if result[book_no].get('edition_count') else '',
-           'cover_id':result[book_no]['cover_i'] if result[book_no].get('cover_i') else '',
-           'publish_year':result[book_no]['first_publish_year'] if result[book_no].get('first_publish_year') else '',
-           'language':result[book_no]['language'] if result[book_no].get('language') else '',
-       })
+       if Saved_Map.get(book_no):
+        print('this book already exit.')
+        continue
+       
+       Saved_Map[book_no] = {
+          'id':result[book_no]['key'] if result[book_no].get('key') else '',
+          'title':result[book_no]['title'] if result[book_no].get('title') else '',
+          'author':result[book_no]['author_name'] if result[book_no].get('author_name') else '',
+          'edition_count':result[book_no]['edition_count'] if result[book_no].get('edition_count') else '',
+          'cover_id':result[book_no]['cover_i'] if result[book_no].get('cover_i') else '',
+          'publish_year':result[book_no]['first_publish_year'] if result[book_no].get('first_publish_year') else '',
+          'language':result[book_no]['language'] if result[book_no].get('language') else '',
+          'image_url':f"https://covers.openlibrary.org/b/id/{result[book_no].get('cover_i')}-L.jpg" if result[book_no].get('cover_i') else ''
+       }
+
        print('---------------Saved list---------------')
-       for book in Saved_List:
-         print(book,end='\n')
+       for key,values in Saved_Map.items():
+         print(values,end='\n\n')
        break;
 
       else:
@@ -85,10 +91,12 @@ try:
    elif choice!='0':
     print('Invalid Input!')
    else:
-    print('Program Terminated!')
+    print('File Saved!')
 
+  book_list = list(Saved_Map.values()) #convert values into list
+  
   with open('C:\\Users\\PMLS\\Downloads\\Reading_List.json','w') as file:
-    json.dump(Saved_List,file,indent=4)
+    json.dump(book_list,file,indent=4)
     print('Reading List Saved Successfully')
 
 except Exception as e:
