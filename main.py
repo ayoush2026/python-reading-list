@@ -24,6 +24,10 @@ try:
   response.raise_for_status()
   result = response.json()
 
+  if result['num_found']==0:
+   print('Not Exist This Title.')
+   exit()
+
   print('Results Found:',result['num_found'])
 
   length = len(result['docs'])
@@ -40,10 +44,10 @@ try:
      cover_url = f"https://covers.openlibrary.org/b/id/{book.get('cover_i')}-L.jpg"
      print('Image Url:',cover_url)
 
-    print('Title:',book['title'])
-    print('Author Name:',book['author_name'])
-    print('First Published:',book['first_publish_year'])
-    print('Editions:',book['edition_count'],end='\n\n')
+    print('Title:',book['title']) if book.get('title') else print('Title: not exist')
+    print('Author Name:',book['author_name']) if book.get('author_name') else print('Author Name: not exist')
+    print('First Published:',book['first_publish_year']) if book.get('first_publish_year') else print('first_publish_year: not exist')
+    print('Editions:',book['edition_count'],end='\n\n') if book.get('edition_count') else print('edition_count: not exist')
     No+=1
 
   choice=''
